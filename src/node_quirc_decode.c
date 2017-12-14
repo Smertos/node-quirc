@@ -11,7 +11,7 @@
 
 #include "node_quirc_decode.h"
 #include "quirc.h"
-
+#include "omem.h"
 
 /* a nq_code list */
 struct nq_code_list {
@@ -217,7 +217,7 @@ nq_load_png(struct quirc *q, const uint8_t *img, size_t img_len)
 	FILE *infile = NULL;
 	volatile int success = 0;
 
-	infile = fmemopen((uint8_t *)img, img_len, "r");
+	infile = omem_open((uint8_t *)img, "r");
 	if (infile == NULL)
 		goto out;
 
