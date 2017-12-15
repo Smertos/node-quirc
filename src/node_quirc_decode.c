@@ -11,7 +11,12 @@
 
 #include "node_quirc_decode.h"
 #include "quirc.h"
-#include "omem.h"
+
+#ifdef _WIN32
+  #include "omem-winapi-tmpfile.c"
+#elif _APPLE_
+  #include "omem-funopen.c"
+#endif
 
 /* a nq_code list */
 struct nq_code_list {
@@ -217,7 +222,12 @@ nq_load_png(struct quirc *q, const uint8_t *img, size_t img_len)
 	FILE *infile = NULL;
 	volatile int success = 0;
 
+#if defined(_WIN32) || defined(__APPLE__)
 	infile = omem_open((uint8_t *)img, "r");
+#else
+        infile = fmemopen((uint8_t *)img, "r");
+#endif
+
 	if (infile == NULL)
 		goto out;
 
